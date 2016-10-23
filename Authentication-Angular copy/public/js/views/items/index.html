@@ -1,0 +1,11 @@
+<h1>Items</h1>
+<div class="media" ng-repeat="item in itemsIndex.items">
+  <div class="media-left">
+    <a ui-sref="#">
+      <img class="media-object" ng-src="{{ item.image }}">
+    </a>
+  </div>
+  <div class="media-body">
+    <h4 class="media-heading">{{ item.itemname }}</h4>
+  </div>
+</div>
