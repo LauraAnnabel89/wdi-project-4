@@ -2,7 +2,7 @@
 <html ng-app="angularAuthentication">
   <head>
     <meta charset="utf-8">
-    <title>Angular Authentication</title>
+    <title>Mode</title>
     <link rel="stylesheet" href="/css/style.css" charset="utf-8">
     <script src="/js/app.js" charset="utf-8"></script>
     <base href="/" />
@@ -19,7 +19,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" ui-sref="home">Angular Authentication</a></li>
+            <a class="navbar-brand" ui-sref="home">Mode</a></li>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -34,8 +34,11 @@
               <li ng-show="main.user">
                 <a ui-sref="usersIndex">Users</a>
               </li>
-              <li ng-show="main.item">
+              <li ng-hide="main.items">
                 <a ui-sref="itemsIndex">Items</a>
+              </li>
+              <li ng-hide="main.outfits">
+                <a ui-sref="outfitsIndex">Outfits</a>
               </li>
               <li ng-show="main.user">
                 <a>Welcome, {{ main.user.username }}</a>

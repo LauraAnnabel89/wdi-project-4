@@ -1,5 +1,5 @@
 {
-  "name": "angular-authentication",
+  "name": "mode",
   "version": "1.0.0",
   "description": "An authenticated express app with Angualar.",
   "main": "index.js",
