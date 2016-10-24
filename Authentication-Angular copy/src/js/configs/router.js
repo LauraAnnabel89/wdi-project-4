@@ -1,6 +1,6 @@
 angular
-  .module("angularAuthentication")
-  .config(Router);
+.module("mode")
+.config(Router);
 
 Router.$inject = ["$stateProvider", "$locationProvider", "$urlRouterProvider"];
 function Router($stateProvider, $locationProvider, $urlRouterProvider){
@@ -30,6 +30,31 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
     url: "/items",
     templateUrl:  "/js/views/items/index.html",
     controller:   "itemsIndexCtrl as itemsIndex",
+  })
+  .state('itemsNew', {
+    url: "/items/new",
+    templateUrl: "/js/views/items/new.html",
+    controller: "itemsNewCtrl as itemsNew"
+  })
+  .state('itemsShow', {
+    url: "/items/:id",
+    templateUrl: "/js/views/items/show.html",
+    controller: "itemsShowCtrl as itemsShow"
+  })
+  .state("outfitsIndex", {
+    url: "/outfits",
+    templateUrl:  "/js/views/outfits/index.html",
+    controller:   "outfitsIndexCtrl as outfitsIndex",
+  })
+  .state('outfitsNew', {
+    url: "/outfits/new",
+    templateUrl: "/js/views/items/new.html",
+    controller: "outfitsNewCtrl as outfitsNew"
+  })
+  .state('outfitsShow', {
+    url: "/outfits/:id",
+    templateUrl: "/js/views/outfitss/show.html",
+    controller: "outfitsShowCtrl as outfitsShow"
   });
 
   $urlRouterProvider.otherwise("/");

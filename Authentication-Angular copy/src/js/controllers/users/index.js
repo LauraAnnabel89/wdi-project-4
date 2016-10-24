@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .controller("usersIndexCtrl", usersIndexCtrl);
 
 usersIndexCtrl.$inject = ["User"];

@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .controller("registerCtrl", registerCtrl);
 
 registerCtrl.$inject = ["User", "CurrentUserService"];

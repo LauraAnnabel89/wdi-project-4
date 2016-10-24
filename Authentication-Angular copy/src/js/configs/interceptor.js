@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .config(setUpInterceptor);
 
 setUpInterceptor.$inject = ["$httpProvider"];

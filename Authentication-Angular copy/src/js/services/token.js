@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .service("TokenService", TokenService);
 
 TokenService.$inject = ["$window", "jwtHelper"];

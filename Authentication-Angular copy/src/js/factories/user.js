@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .factory("User", userFactory);
 
 userFactory.$inject = ["API", "$resource"];

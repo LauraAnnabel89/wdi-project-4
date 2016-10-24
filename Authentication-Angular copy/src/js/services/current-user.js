@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .service("CurrentUserService", CurrentUserService);
 
 CurrentUserService.$inject = ["$rootScope", "TokenService"];

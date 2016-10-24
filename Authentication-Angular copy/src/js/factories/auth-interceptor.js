@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .factory("AuthInterceptor", AuthInterceptor);
 
 AuthInterceptor.$inject = ["API", "TokenService"];

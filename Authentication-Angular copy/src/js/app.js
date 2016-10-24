@@ -1,5 +1,5 @@
 angular
-  .module("angularAuthentication", [
+  .module("mode", [
     "ui.router",
     "ngResource",
     "angular-jwt"

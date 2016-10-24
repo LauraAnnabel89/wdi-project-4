@@ -1,3 +1,3 @@
 angular
-  .module("angularAuthentication")
+  .module("mode")
   .constant("API", `${window.location.origin}/api`);

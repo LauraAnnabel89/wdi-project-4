@@ -1,7 +1,8 @@
 <h1>Items</h1>
+<button ui-sref-active ui-sref="itemsNew">Add Item</button>
 <div class="media" ng-repeat="item in itemsIndex.items">
   <div class="media-left">
-    <a ui-sref="#">
+    <a ui-sref="itemsShow">
       <img class="media-object" ng-src="{{ item.image }}">
     </a>
   </div>
