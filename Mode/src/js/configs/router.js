@@ -21,10 +21,10 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
     templateUrl: "/js/views/login.html",
     controller: "loginCtrl as login",
   })
-  .state("usersIndex", {
-    url: "/users",
-    templateUrl:  "/js/views/users/index.html",
-    controller:   "usersIndexCtrl as usersIndex",
+  .state("usersShow", {
+    url: "/users/:id",
+    templateUrl:  "/js/views/users/show.html",
+    controller:   "usersShowCtrl as usersShow",
   })
   .state("itemsIndex", {
     url: "/items",
@@ -48,12 +48,12 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
   })
   .state('outfitsNew', {
     url: "/outfits/new",
-    templateUrl: "/js/views/items/new.html",
+    templateUrl: "/js/views/outfits/new.html",
     controller: "outfitsNewCtrl as outfitsNew"
   })
   .state('outfitsShow', {
     url: "/outfits/:id",
-    templateUrl: "/js/views/outfitss/show.html",
+    templateUrl: "/js/views/outfits/show.html",
     controller: "outfitsShowCtrl as outfitsShow"
   });
 

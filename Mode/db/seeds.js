@@ -1,17 +1,24 @@
 const mongoose = require("mongoose");
 const config   = require("../config/config");
-const Item     = require("../models/item");
+
+const User     = require("../models/user");
 
 mongoose.connect(config.db);
 
-const items = [
-  { item: "COS T-Shirt", image: "http://www.cosstores.com/Content/ProductContent/0392122005/0392122005_5_6.jpg" },
-  { item: "ACNE Jeans", image: "http://i.ebayimg.com/00/z/hEcAAOxyXp5SQFuu/$T2eC16hHJF0FFZkN,5E5BSQFuuOo)!~~_32.JPG" }
-];
+User.collection.drop();
 
-Item.collection.drop();
+const user = {
+  username: "Laura",
+  firstName: "Laura",
+  lastName: "Laura",
+  image: "http://fillmurray.com/200/200",
+  email: "laura@laura.com",
+  password: "password",
+  passwordConfirmation: "password",
+  items: []
+};
 
-items.forEach(item => Item.create(item, (err, item) => {
-  if (err) return console.log(err);
-  return console.log(`${item.item} was created`);
-}));
+User.create(user, (err, user) => {
+  if (err) return console.log("Something went wrong");
+  return console.log('User was created');
+});

@@ -2,9 +2,9 @@ angular
   .module("mode")
   .controller("itemsIndexCtrl", itemsIndexCtrl);
 
-itemsIndexCtrl.$inject = ["Item"];
-function itemsIndexCtrl(Item){
-  const vm   = this;
+itemsIndexCtrl.$inject = ["Item", "$stateParams"];
+function itemsIndexCtrl(Item, $stateParams){
+  const vm = this;
 
   Item
     .query()

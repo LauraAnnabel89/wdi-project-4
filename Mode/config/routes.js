@@ -19,14 +19,16 @@ router.route('/users/:id')
   .delete(users.delete);
 
 router.route('/items')
-  .get(items.index);
+  .get(items.index)
+  .post(items.create);
 router.route('/items/:id')
   .get(items.show)
   .put(items.update)
   .delete(items.delete);
 
 router.route('/outfits')
-  .get(outfits.index);
+  .get(outfits.index)
+  .post(outfits.create);
 router.route('/outfits/:id')
   .get(outfits.show)
   .put(outfits.update)

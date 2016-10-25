@@ -15,7 +15,7 @@ function itemsEditCtrl(Item, $stateParams, $state){
       .update($stateParams, { item: vm.item })
       .$promise
       .then(data => {
-        $state.go("itemsShow", $stateParams);
+        $state.go("item", $stateParams);
       });
   };
 }

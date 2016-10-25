@@ -1,6 +1,7 @@
 module.exports = {
   index:  itemsIndex,
   show:   itemsShow,
+  create: itemsCreate,
   update: itemsUpdate,
   delete: itemsDelete
 };
@@ -8,9 +9,20 @@ module.exports = {
 const Item = require('../models/item');
 
 function itemsIndex(req, res) {
-  Item.find((err, items) => {
-    if (err) return res.status(500).json({ message: "Something went wrong." });
+  Item.find({
+    user: req.user._id
+  }, (err, items) => {
+    if (err)  return res.status(500).json({ message: "Something went wrong." });
     return res.status(200).json({ items });
+  });
+}
+
+function itemsCreate(req, res) {
+  let item    = new Item(req.body.item);
+  item.user   = req.user._id;
+  item.save((err, item) => {
+    if (err) return res.status(500).json({ message: "Something went wrong." });
+    return res.status(201).json({ item });
   });
 }
 

@@ -8,57 +8,45 @@
   <base href="/" />
 </head>
 <body ng-controller="mainCtrl as main">
-  <header>
-    <nav class="navbar navbar-default">
-      <div class="container">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" ui-sref="home">Mode</a></li>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-            <li ng-hide="main.user">
-              <a ui-sref="register">Register</a>
-            </li>
-            <li ng-hide="main.user">
-              <a ui-sref="login">Login</a>
-            </li>
-            <li ng-show="main.user">
-              <a ui-sref="itemsIndex">Items</a>
-            </li>
-            <li>
-              <li ng-show="main.user">
-                <a ui-sref="outfitsIndex">Outfits</a>
-              </li>
-
-              <li ng-show="main.user">
-                <a ui-sref="usersIndex">Welcome, {{ main.user.username }}</a>
-              </li>
-              <li ng-show="main.user">
-                <a href="#" ng-click="main.logout()">Logout</a>
-              </li>
-            </ul>
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
+    <div class="button_container" id="toggle">
+      <span class="top"></span>
+      <span class="middle"></span>
+      <span class="bottom"></span>
+    </div>
+    <div class="overlay" id="overlay">
+      <nav class="overlay-menu">
+        <ul>
+          <li>
+            <a ui-sref="home">Mode</a>
+          </li>
+          <li ng-hide="main.user">
+            <a ui-sref="login">Login</a>
+          </li>
+          <li ng-hide="main.user">
+            <a ui-sref="register">Register</a>
+          </li>
+          <li ng-show="main.user">
+            <a ui-sref="usersShow({ id: main.user.id })">Welcome, {{ main.user.username }}</a>
+          </li>
+          <li ng-show="main.user">
+            <a ui-sref="itemsIndex()">Items</a>
+          </li>
+          <li ng-show="main.user">
+            <a ui-sref="itemsNew()">Add Item</a>
+          </li>
+          <li ng-show="main.user">
+            <a ui-sref="outfitsIndex">Outfits</a>
+          </li>
+          <li ng-show="main.user">
+            <a ui-sref="outfitsNew">Add Outfit</a>
+          </li>
+          <li ng-show="main.user">
+            <a ng-click="main.logout()">Logout</a>
+          </li>
+        </ul>
       </nav>
-    </header>
-    <!-- <nav class="ss-icon closed" tabindex="0">
-      <span id="center-bar"></span>
-      <a href="#">Twitter</a>
-      <a href="#">Facebook</a>
-      <a href="#">Pinterest</a>
-      <a href="#">Google+</a>
-      <a href="#">Ello</a>
-    </nav> -->
-
-    <main class="container" ui-view><!-- Other controllers added HERE --></main>
-  </body>
-  </html>
+    </div>
+  <main class="container" ui-view>
+  </main>
+</body>
+</html>

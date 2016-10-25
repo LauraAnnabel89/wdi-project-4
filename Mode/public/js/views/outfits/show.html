@@ -1,0 +1,10 @@
+<div class="items media" ng-repeat="item in outfitsShow.outfit.items">
+  <div class="media-left">
+    <a ui-sref="itemsShow({ id: item._id })">
+      <img class="media-object" ng-src="{{ item.image }}">
+    </a>
+  </div>
+  <div class="media-body">
+    <h4 class="media-heading">{{ item.itemname }}</h4>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 angular
-  .module("mode")
-  .controller("mainCtrl", mainCtrl);
+.module("mode")
+.controller("mainCtrl", mainCtrl);
 
 mainCtrl.$inject = ["$rootScope", "CurrentUserService", "$state"];
 function mainCtrl($rootScope, CurrentUserService, $state) {
@@ -15,12 +15,18 @@ function mainCtrl($rootScope, CurrentUserService, $state) {
 
   $rootScope.$on("loggedIn", () => {
     vm.user = CurrentUserService.getUser();
-    $state.go("usersIndex");
+    $state.go("usersShow", { id: vm.user._id });
   });
 
   $rootScope.$on("loggedOut", () => {
     vm.user = null;
     $state.go("home");
+  });
+
+
+  $('#toggle').click(function() {
+    $(this).toggleClass('active');
+    $('#overlay').toggleClass('open');
   });
 
   // function clickSet() {

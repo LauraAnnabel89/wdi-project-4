@@ -2,9 +2,28 @@ angular
   .module("mode")
   .controller("outfitsNewCtrl", outfitsNewCtrl);
 
-outfitsNewCtrl.$inject = ["Outfit", "$state"];
-function outfitsNewCtrl(Outfit, $state){
+outfitsNewCtrl.$inject = ["Item", "Outfit", "$state"];
+function outfitsNewCtrl(Item, Outfit, $state){
   const vm  = this;
+
+  Item
+    .query()
+    .$promise
+    .then(data => {
+      vm.items = data.items;
+    });
+
+  vm.outfit = {
+    items: []
+  };
+
+  vm.selectItem = function(item){
+    if (vm.outfit.items.indexOf(item._id) === -1) {
+      vm.outfit.items.push(item._id);
+    } else {
+      vm.outfit.items.splice(vm.outfit.items.indexOf(item._id), 1);
+    }
+  };
 
   vm.submit = () => {
     Outfit
