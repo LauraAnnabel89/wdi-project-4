@@ -1,1 +1,1 @@
-.items img{width:200px}.items .active{border:5px solid orange}
+.items li{list-style:none}.items li img{max-width:15%;float:left;margin:20px}.active{border:5px solid orange}#share-buttons img{width:35px;padding:5px;border:0;box-shadow:0;display:inline}

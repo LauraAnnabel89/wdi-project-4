@@ -1,11 +1,12 @@
 <h1>Items</h1>
 <div class="items media" ng-repeat="item in itemsIndex.items">
   <div class="media-left">
-    <a ui-sref="itemsShow({ id: item._id })">
-      <img class="media-object" ng-src="{{ item.image }}">
-    </a>
-  </div>
-  <div class="media-body">
-    <h4 class="media-heading">{{ item.itemname }}</h4>
-  </div>
-</div>
+    <ul class="row">
+      <li class="col-md-4">
+        <ul class="tile">
+          <li><a ui-sref="itemsShow({ id: item._id })">
+            <img class="media-object" ng-src="{{ item.image }}"></a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>

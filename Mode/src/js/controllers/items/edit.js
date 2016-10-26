@@ -11,8 +11,9 @@ function itemsEditCtrl(Item, $stateParams, $state){
   });
 
   vm.submit = () => {
+    console.log("vm.item", vm.item);
     Item
-      .update($stateParams, { item: vm.item.id })
+    .update($stateParams, { item: vm.item.data })
       .$promise
       .then(data => {
         $state.go("item", $stateParams);
