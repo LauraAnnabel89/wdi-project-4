@@ -12,7 +12,7 @@ function itemsEditCtrl(Item, $stateParams, $state){
 
   vm.submit = () => {
     Item
-      .update($stateParams, { item: vm.item })
+      .update($stateParams, { item: vm.item.id })
       .$promise
       .then(data => {
         $state.go("item", $stateParams);

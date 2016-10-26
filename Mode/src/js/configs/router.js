@@ -31,6 +31,11 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
     templateUrl:  "/js/views/items/index.html",
     controller:   "itemsIndexCtrl as itemsIndex",
   })
+  .state("itemsEdit",      {
+    url: "/items/:id/edit",
+    templateUrl:  "/js/views/items/edit.html",
+    controller:   "itemsEditCtrl as itemsEdit",
+  })
   .state('itemsNew', {
     url: "/items/new",
     templateUrl: "/js/views/items/new.html",
