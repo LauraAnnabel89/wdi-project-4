@@ -12,7 +12,7 @@ const user = {
   username: "Laura",
   firstName: "Laura",
   lastName: "Laura",
-  image: "http://fillmurray.com/200/200",
+  image: "https://secure.gravatar.com/avatar/644e46420d27a970469e32fbeeca1aa9?s=320",
   email: "laura@laura.com",
   password: "password",
   passwordConfirmation: "password",

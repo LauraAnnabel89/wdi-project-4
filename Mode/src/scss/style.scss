@@ -1,5 +1,6 @@
 @import "bower";
 @import "variables";
+@import "items";
 @import "nav";
 
 @import url(http://fonts.googleapis.com/css?family=Vollkorn|Roboto);
@@ -26,25 +27,7 @@
 //   margin: 40px
 // }
 //
-// .media-object {
-//   max-width: 250px;
-//   max-height: 350px;
-//   padding: 0;
-// }
 
-// .items {
-//   float: left;
-//   position: center;
-//   margin: 10px;
-// }
-//
-// ul {
-//   list-style: none;
-// }
-
-.active {
-  border: 5px solid grey;
-}
 //
 // #share-buttons img {
 //   width: 35px;

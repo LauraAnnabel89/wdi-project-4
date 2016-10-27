@@ -1,0 +1,20 @@
+.media-object {
+  max-width: 250px;
+  max-height: 350px;
+  padding: 0;
+  margin: 20px;
+}
+
+.items {
+  float: left;
+  position: center;
+  margin: 20px;
+}
+
+ul {
+  list-style: none;
+}
+
+.active {
+  transform: scale(1.2,1.2);
+}
