@@ -5,10 +5,12 @@
   <title>Mode</title>
   <link rel="stylesheet" href="/css/style.css" charset="utf-8">
   <!-- <script src="ng-flow/dist/ng-flow-standalone.min.js"></script> -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
   <script src="/js/app.js" charset="utf-8"></script>
   <base href="/" />
 </head>
 <body ng-controller="mainCtrl as main">
+  <h1>MODE</h1>
     <div class="button_container" id="toggle">
       <span class="top"></span>
       <span class="middle"></span>
@@ -18,31 +20,31 @@
       <nav class="overlay-menu">
         <ul>
           <li>
-            <a ui-sref="home">Mode</a>
+            <a class="nav" ui-sref="home">Mode</a>
           </li>
           <li ng-hide="main.user">
-            <a ui-sref="login">Login</a>
+            <a class="nav" ui-sref="login">Login</a>
           </li>
           <li ng-hide="main.user">
-            <a ui-sref="register">Register</a>
+            <a class="nav" ui-sref="register">Register</a>
           </li>
           <li ng-show="main.user">
-            <a ui-sref="usersShow({ id: main.user.id })">Welcome, {{ main.user.username }}</a>
+            <a class="nav" ui-sref="usersShow({ id: main.user.id })">Welcome, {{ main.user.username }}</a>
           </li>
           <li ng-show="main.user">
-            <a ui-sref="itemsIndex()">Items</a>
+            <a class="nav" ui-sref="itemsIndex()">Items</a>
           </li>
           <li ng-show="main.user">
-            <a ui-sref="itemsNew()">Add Item</a>
+            <a class="nav" ui-sref="itemsNew()">Add Item</a>
           </li>
           <li ng-show="main.user">
-            <a ui-sref="outfitsIndex">Outfits</a>
+            <a class="nav" ui-sref="outfitsIndex">Outfits</a>
           </li>
           <li ng-show="main.user">
-            <a ui-sref="outfitsNew">Add Outfit</a>
+            <a class="nav" ui-sref="outfitsNew()">Add Outfit</a>
           </li>
           <li ng-show="main.user">
-            <a ng-click="main.logout()">Logout</a>
+            <a class="nav" ng-click="main.logout()">Logout</a>
           </li>
         </ul>
       </nav>

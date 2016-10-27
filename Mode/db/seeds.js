@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const config   = require("../config/config");
 
 const User     = require("../models/user");
+const Item     = require("../models/item");
 
 mongoose.connect(config.db);
 
@@ -17,6 +18,8 @@ const user = {
   passwordConfirmation: "password",
   items: []
 };
+
+
 
 User.create(user, (err, user) => {
   if (err) return console.log("Something went wrong");

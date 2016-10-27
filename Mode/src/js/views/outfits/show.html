@@ -1,14 +1,22 @@
 <div class="items media" ng-repeat="item in outfitsShow.outfit.items">
   <div class="media-left">
+    <ul class="row">
+      <li class="col-xl-2">
+        <ul class="tile">
     <a ui-sref="itemsShow({ id: item._id })">
       <img class="media-object" ng-src="{{ item.image }}">
     </a>
-  </div>
+  </ul>
+</li>
+</ul>
+</div>
+
+  <!-- </div>
   <div class="media-body">
     <h4 class="media-heading">{{ item.itemname }}</h4>
   </div>
-</div>
-<button class="btn btn-default" ui-sref="outfitsEdit({id:outfitsShow.outfit._id})">Edit</button>
+</div> -->
+<!-- <button class="btn btn-default" ui-sref="outfitsEdit({id:outfitsShow.outfit._id})">Edit</button>
 <button class="btn btn-default" ng-click="outfitsShow.outfitDelete()">Delete</button>
 <a href="http://www.facebook.com/sharer.php?u=http://localhost:3000/outfits/" target="_blank">
         <img src="https://simplesharebuttons.com/images/somacro/facebook.png" alt="Facebook" />
@@ -21,4 +29,4 @@
  </a>
    <a href="https://www.instagram.com/url=https://simplesharebuttons.com&amp;text=Simple%20Share%20Buttons&amp;hashtags=simplesharebuttons" target="_blank" id="share-buttons">
      <img src="http://sfile.f-static.com/image/users/457060/ftp/my_files/38-instagram-3-128.png?sopC=1472436576917" alt="Instagram" />
- </a>
+ </a> -->
