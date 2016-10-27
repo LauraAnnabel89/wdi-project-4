@@ -1,0 +1,32 @@
+.title {
+  font-family: $title-font;
+  float: left;
+  margin: 45px;
+  font-size: 50px;
+}
+
+.home {
+  font-family: $title-font;
+  text-transform: uppercase;
+}
+
+.subTitle {
+  font-family: $title-font;
+  font-weight: 100;
+}
+
+h1 {
+  font-family: $title-font;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.userGreet {
+  margin: 50px;
+  font-size: 20px;
+  font-family: $title-font;
+  font-weight: lighter;
+  position: absolute;
+  right: 10%;
+  top: 0%;
+}

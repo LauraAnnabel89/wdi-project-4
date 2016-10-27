@@ -1,6 +1,8 @@
 <h1>Outfits</h1>
 <ul>
   <li ng-repeat="outfit in outfitsIndex.outfits" ui-sref="outfitsShow({ id: outfit._id })">
-    {{ outfit.name }}
+    <img ng-src="{{ outfit.items }}" alt="Description" />
   </li>
 </ul>
+<button class="button" class="button"  class="btn btn-default" ui-sref="itemsEdit({id: items.item.id})">Edit </button>
+<button class="btn btn-default" ng-click="itemsShow.itemDelete()">Delete</button>
