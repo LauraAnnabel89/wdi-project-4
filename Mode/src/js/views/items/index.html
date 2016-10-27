@@ -3,9 +3,12 @@
   <div class="media-left">
     <ul class="row tile items">
       <li class="col-md-4">
-        <ul class="tile items"> 
+        <ul class="tile items">
           <li>
-            <a class="items" ui-sref="itemsShow({ id: item._id })">
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+              Launch demo modal
+            </button>
+            <a class="items" data-toggle="modal" data-target="#myModal" ui-sref="itemsShow({ id: item._id })">
               <img class="media-object" ng-src="{{ item.image }}"></a>
             </li>
           </ul>
