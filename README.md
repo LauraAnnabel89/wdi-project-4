@@ -28,7 +28,6 @@ I decided to keep the colour scheme very minimal and already knew that I wanted 
 
 ![Alt text](/src/rail.jpg?raw=true)
 
-
 How it works
 
 Once the user logs in or registered they are taken to the landing page. From here they have the option to view their wardrobe (individual clothing items) or full outfits.
@@ -43,6 +42,8 @@ Planning
 Wireframing
 
 I used both written and online wireframes to work out the user-journey and ensure that I had captured all of the elements needed. I initially worked from a mobile responsive viewpoint as, after speaking to various friends about this idea they suggested this would be the most useful version of the app.
+
+![Alt text](/src/wireframes.png?raw=true)
 
 Staying On Track
 
