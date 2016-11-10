@@ -4,6 +4,7 @@ angular
 
 itemsIndexCtrl.$inject = ["Item", "$stateParams"];
 function itemsIndexCtrl(Item, $stateParams){
+    $("body").css("background-image", "");
   const vm = this;
 
   Item

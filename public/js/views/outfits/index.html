@@ -1,8 +1,12 @@
-<h1>Outfits</h1>
+<h1 class="heading">Outfits</h1>
+<h2 ui-sref="outfitsNew()"><img src="../hangerEmpty.png" alt="" />Add an Outfit</h2>
 <ul>
-  <li ng-repeat="outfit in outfitsIndex.outfits" ui-sref="outfitsShow({ id: outfit._id })">
-    <img ng-src="{{ outfit.items }}" alt="Description" />
+  <li ng-repeat="outfit in outfitsIndex.outfits" ui-sref="outfitsShow({ id: outfit.id })">
+    <ul class="outfit-row">
+      <!-- <li><h4>{{outfit.name}}</h4></li> -->
+      <li ng-repeat="item in outfit.items"><img ng-src="{{item.image}}" alt="{{item.item}}" /></li>
+    </ul>
   </li>
 </ul>
-<button class="button" class="button"  class="btn btn-default" ui-sref="itemsEdit({id: items.item.id})">Edit </button>
-<button class="btn btn-default" ng-click="itemsShow.itemDelete()">Delete</button>
+<!-- <button class="button" class="button"  class="btn btn-default" ui-sref="itemsEdit({id: items.item.id})">Edit </button>
+<button class="btn btn-default" ng-click="itemsShow.itemDelete()">Delete</button> -->

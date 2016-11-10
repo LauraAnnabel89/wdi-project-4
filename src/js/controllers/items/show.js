@@ -4,6 +4,7 @@ angular
 
 itemsShowCtrl.$inject = ["Item", "$stateParams", "$state"];
 function itemsShowCtrl(Item, $stateParams, $state){
+    $("body").css("background-image", "");
   const vm = this;
 
   Item.get($stateParams, data => {

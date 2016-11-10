@@ -4,6 +4,7 @@ angular
 
 loginCtrl.$inject = ["User", "CurrentUserService"];
 function loginCtrl(User, CurrentUserService) {
+    $("body").css("background-image", "");
   const vm = this;
   vm.login = () => {
     User

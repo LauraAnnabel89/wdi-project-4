@@ -4,6 +4,7 @@ angular
 
 outfitsShowCtrl.$inject = ["Outfit", "$stateParams", "$state"];
 function outfitsShowCtrl(Outfit, $stateParams, $state){
+    $("body").css("background-image", "");
   const vm = this;
 
   Outfit

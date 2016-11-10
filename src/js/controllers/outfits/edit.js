@@ -4,6 +4,7 @@ angular
 
 outfitsEditCtrl.$inject = ["Outfit", "$stateParams", "$state"];
 function outfitsEditCtrl(Outfit, $stateParams, $state){
+    $("body").css("background-image", "");
   const vm = this;
 
   Outfit.get($stateParams, data => {

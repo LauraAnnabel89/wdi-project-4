@@ -4,6 +4,7 @@ angular
 
 outfitsNewCtrl.$inject = ["Item", "Outfit", "$state"];
 function outfitsNewCtrl(Item, Outfit, $state){
+    $("body").css("background-image", "");
   const vm  = this;
 
   Item

@@ -5,7 +5,39 @@
 @import "nav";
 
 body {
-  background-image: url("../main6.jpg");
+  background: white;
+  background-size: cover;
   background-repeat: no-repeat;
-  background-size: cover;  
+}
+
+.btn {
+  background-color: $color-main;
+  padding: 20px;
+  color: $color-active;
+  border: none;
+  margin: 10px;
+}
+.btn-primary.focus, .btn-primary:focus, .btn-primary:hover .btn-primary {
+  background-color: $color-active;
+  color: $color-main;
+}
+.form-group {
+  width: 50%;
+  margin: 0 auto;
+  padding: 10px;
+}
+ul {
+  margin-left: -100px;
+}
+
+ul.outfit-row{
+  margin-left: -100px;
+  margin: 0 auto;
+  li {
+    display: inline-block;
+    margin: 50px;
+    img {
+      max-height: 200px;
+    }
+  }
 }

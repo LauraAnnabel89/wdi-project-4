@@ -23,7 +23,6 @@ function mainCtrl($rootScope, CurrentUserService, $state) {
     $state.go("home");
   });
 
-
   $('#toggle').click(function() {
     $(this).toggleClass('active');
     $('#overlay').toggleClass('open');

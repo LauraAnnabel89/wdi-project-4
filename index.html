@@ -12,7 +12,7 @@
 <body ng-controller="mainCtrl as main">
 <header>
     <h1 class="title" ui-sref="home">Mode</h1>
-    <h3 class="userGreet" ui-sref="usersShow({ id: main.user.id })">Welcome, {{ main.user.username }}</h3>
+    <h3 class="userGreet" ng-show="main.user" >Welcome, {{ main.user.username }}</h3>
     <div class="button_container" id="toggle">
       <span class="top"></span>
       <span class="middle"></span>
@@ -34,15 +34,15 @@
           <li ng-show="main.user">
             <a class="subTitle" ui-sref="itemsIndex()">Items</a>
           </li>
-          <li ng-show="main.user">
+          <!-- <li ng-show="main.user">
             <a class="subTitle" ui-sref="itemsNew()">Add Item</a>
-          </li>
+          </li> -->
           <li ng-show="main.user">
             <a class="subTitle" ui-sref="outfitsIndex">Outfits</a>
           </li>
-          <li ng-show="main.user">
+          <!-- <li ng-show="main.user">
             <a class="subTitle" ui-sref="outfitsNew()">Add Outfit</a>
-          </li>
+          </li> -->
           <li ng-show="main.user">
             <a class="subTitle" ng-click="main.logout()">Logout</a>
           </li>

@@ -1,7 +1,7 @@
 const mongoose   = require ("mongoose");
 
 const outfitSchema = new mongoose.Schema({
-  name:  { type: String, trim: true, required: true },
+  name:  { type: String, trim: true},
   items: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Item', required: true }],
   user:  { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 }, {

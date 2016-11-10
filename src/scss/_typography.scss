@@ -19,6 +19,15 @@ h1 {
   font-family: $title-font;
   text-transform: uppercase;
   cursor: pointer;
+  margin-top: -100px;
+}
+
+h2 {
+ font-size: 20px;
+}
+
+.heading {
+  font-size: 100px;
 }
 
 .userGreet {

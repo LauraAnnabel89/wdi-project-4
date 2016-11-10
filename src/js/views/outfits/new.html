@@ -1,11 +1,11 @@
 <h2>Add Outfit</h2>
 <form ng-submit="outfitsNew.submit()">
   <div class="form-group">
-    <label>Name</label>
     <input ng-model="outfitsNew.outfit.name" class="form-control">
+    <input type="submit" value="Add" class="btn btn-primary">
   </div>
   <div class="items" ng-repeat="item in outfitsNew.items">
     <img class="media-object" ng-src="{{ item.image }}" ng-click="outfitsNew.selectItem(item)" toggle-class="active">
   </div>
-  <input type="submit" value="Add" class="btn btn-primary">
+
 </form>

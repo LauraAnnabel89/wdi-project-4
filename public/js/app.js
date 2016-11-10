@@ -31768,7 +31768,7 @@ $provide.value("$locale", {
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 /**
  * State-based routing for AngularJS
- * @version v0.3.1
+ * @version v0.3.2
  * @link http://angular-ui.github.com/
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -31988,6 +31988,11 @@ function map(collection, callback) {
     result[i] = callback(val, i);
   });
   return result;
+}
+
+// issue #2676 #2889
+function silenceUncaughtInPromise (promise) {
+  return promise.then(undefined, function() {}) && promise;
 }
 
 /**
@@ -33034,8 +33039,8 @@ function $UrlMatcherFactory() {
   // If the slashes are simply URLEncoded, the browser can choose to pre-decode them,
   // and bidirectional encoding/decoding fails.
   // Tilde was chosen because it's not a RFC 3986 section 2.2 Reserved Character
-  function valToString(val) { return val != null ? val.toString().replace(/~/g, "~~").replace(/\//g, "~2F") : val; }
-  function valFromString(val) { return val != null ? val.toString().replace(/~2F/g, "/").replace(/~~/g, "~") : val; }
+  function valToString(val) { return val != null ? val.toString().replace(/(~|\/)/g, function (m) { return {'~':'~~', '/':'~2F'}[m]; }) : val; }
+  function valFromString(val) { return val != null ? val.toString().replace(/(~~|~2F)/g, function (m) { return {'~~':'~', '~2F':'/'}[m]; }) : val; }
 
   var $types = {}, enqueue = true, typeQueue = [], injector, defaultTypes = {
     "string": {
@@ -34669,10 +34674,12 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
   $get.$inject = ['$rootScope', '$q', '$view', '$injector', '$resolve', '$stateParams', '$urlRouter', '$location', '$urlMatcherFactory'];
   function $get(   $rootScope,   $q,   $view,   $injector,   $resolve,   $stateParams,   $urlRouter,   $location,   $urlMatcherFactory) {
 
-    var TransitionSuperseded = $q.reject(new Error('transition superseded'));
-    var TransitionPrevented = $q.reject(new Error('transition prevented'));
-    var TransitionAborted = $q.reject(new Error('transition aborted'));
-    var TransitionFailed = $q.reject(new Error('transition failed'));
+    var TransitionSupersededError = new Error('transition superseded');
+
+    var TransitionSuperseded = silenceUncaughtInPromise($q.reject(TransitionSupersededError));
+    var TransitionPrevented = silenceUncaughtInPromise($q.reject(new Error('transition prevented')));
+    var TransitionAborted = silenceUncaughtInPromise($q.reject(new Error('transition aborted')));
+    var TransitionFailed = silenceUncaughtInPromise($q.reject(new Error('transition failed')));
 
     // Handles the case where a state which is the target of a transition is not found, and the user
     // can optionally retry or defer the transition
@@ -34728,7 +34735,10 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
       var retryTransition = $state.transition = $q.when(evt.retry);
 
       retryTransition.then(function() {
-        if (retryTransition !== $state.transition) return TransitionSuperseded;
+        if (retryTransition !== $state.transition) {
+          $rootScope.$broadcast('$stateChangeCancel', redirect.to, redirect.toParams, state, params);
+          return TransitionSuperseded;
+        }
         redirect.options.$retry = true;
         return $state.transitionTo(redirect.to, redirect.toParams, redirect.options);
       }, function() {
@@ -35067,7 +35077,10 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
       var transition = $state.transition = resolved.then(function () {
         var l, entering, exiting;
 
-        if ($state.transition !== transition) return TransitionSuperseded;
+        if ($state.transition !== transition) {
+          $rootScope.$broadcast('$stateChangeCancel', to.self, toParams, from.self, fromParams);
+          return TransitionSuperseded;
+        }
 
         // Exit 'from' states not kept
         for (l = fromPath.length - 1; l >= keep; l--) {
@@ -35088,7 +35101,10 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
         }
 
         // Run it again, to catch any transitions in callbacks
-        if ($state.transition !== transition) return TransitionSuperseded;
+        if ($state.transition !== transition) {
+          $rootScope.$broadcast('$stateChangeCancel', to.self, toParams, from.self, fromParams);
+          return TransitionSuperseded;
+        }
 
         // Update globals in $state
         $state.$current = to;
@@ -35124,7 +35140,14 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
 
         return $state.current;
       }).then(null, function (error) {
-        if ($state.transition !== transition) return TransitionSuperseded;
+        // propagate TransitionSuperseded error without emitting $stateChangeCancel
+        // as it was already emitted in the success handler above
+        if (error === TransitionSupersededError) return TransitionSuperseded;
+
+        if ($state.transition !== transition) {
+          $rootScope.$broadcast('$stateChangeCancel', to.self, toParams, from.self, fromParams);
+          return TransitionSuperseded;
+        }
 
         $state.transition = null;
         /**
@@ -35148,7 +35171,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
         evt = $rootScope.$broadcast('$stateChangeError', to.self, toParams, from.self, fromParams, error);
 
         if (!evt.defaultPrevented) {
-            $urlRouter.update();
+          $urlRouter.update();
         }
 
         return $q.reject(error);
@@ -35263,7 +35286,17 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory) {
       var state = findState(stateOrName, options.relative);
       if (!isDefined(state)) { return undefined; }
       if (!isDefined($state.$current.includes[state.name])) { return false; }
-      return params ? equalForKeys(state.params.$$values(params), $stateParams, objectKeys(params)) : true;
+      if (!params) { return true; }
+
+      var keys = objectKeys(params);
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i], paramDef = state.params[key];
+        if (paramDef && !paramDef.type.equals($stateParams[key], params[key])) {
+          return false;
+        }
+      }
+
+      return true;
     };
 
 
@@ -36036,9 +36069,9 @@ function $StateRefDirective($state, $timeout) {
 
       if (!type.clickable) return;
       hookFn = clickHook(element, $state, $timeout, type, function() { return def; });
-      element.bind("click", hookFn);
+      element[element.on ? 'on' : 'bind']("click", hookFn);
       scope.$on('$destroy', function() {
-        element.unbind("click", hookFn);
+        element[element.off ? 'off' : 'unbind']("click", hookFn);
       });
     }
   };
@@ -36088,9 +36121,9 @@ function $StateRefDynamicDirective($state, $timeout) {
 
       if (!type.clickable) return;
       hookFn = clickHook(element, $state, $timeout, type, function() { return def; });
-      element.bind("click", hookFn);
+      element[element.on ? 'on' : 'bind']("click", hookFn);
       scope.$on('$destroy', function() {
-        element.unbind("click", hookFn);
+        element[element.off ? 'off' : 'unbind']("click", hookFn);
       });
     }
   };
@@ -52802,15 +52835,20 @@ var Popover = function ($) {
 "use strict";angular.module("mode").constant("API",window.location.origin+"/api");
 "use strict";angular.module("mode").factory("AuthInterceptor",AuthInterceptor);AuthInterceptor.$inject=["API","TokenService"];function AuthInterceptor(API,TokenService){return{request:function request(config){var token=TokenService.getToken();if(config.url.indexOf(API)===0&&token){config.headers.Authorization="Bearer "+token;}return config;},response:function response(res){if(res.config.url.indexOf(API)===0&&res.data.token){TokenService.setToken(res.data.token);}return res;}};}
 "use strict";angular.module("mode").service("CurrentUserService",CurrentUserService);CurrentUserService.$inject=["$rootScope","TokenService"];function CurrentUserService($rootScope,TokenService){var currentUser=TokenService.decodeToken();return{user:currentUser,saveUser:function saveUser(user){currentUser=user;$rootScope.$broadcast("loggedIn");},getUser:function getUser(){return currentUser;},clearUser:function clearUser(){currentUser=null;TokenService.clearToken();$rootScope.$broadcast("loggedOut");}};}
-"use strict";angular.module("mode").controller("outfitsEditCtrl",outfitsEditCtrl);outfitsEditCtrl.$inject=["Outfit","$stateParams","$state"];function outfitsEditCtrl(Outfit,$stateParams,$state){var vm=this;Outfit.get($stateParams,function(data){vm.outfit=data.outfit;});vm.submit=function(){Outfit.update($stateParams,{outfit:vm.outfit}).$promise.then(function(data){$state.go("outfitsShow",$stateParams);});};}
-"use strict";angular.module("mode").controller("itemsEditCtrl",itemsEditCtrl);itemsEditCtrl.$inject=["Item","$stateParams","$state"];function itemsEditCtrl(Item,$stateParams,$state){var vm=this;Item.get($stateParams,function(data){vm.item=data.item;});vm.submit=function(){console.log("vm.item",vm.item);Item.update($stateParams,{item:vm.item.data}).$promise.then(function(data){$state.go("item",$stateParams);});};}
-'use strict';$('#toggle').click(function(){$(this).toggleClass('active');$('#overlay').toggleClass('open');});homeCtrl.$inject=["$window","CurrentUserService"];function homeCtrl($window,CurrentUserService){setTimeout(function(){if(CurrentUserService.getUser()&&!$window.localStorage.getItem("firstVisit")){$('#myModal').modal('show');$window.localStorage.setItem("firstVisit",true);}},1000);}
-"use strict";angular.module("mode").controller("usersIndexCtrl",usersIndexCtrl);usersIndexCtrl.$inject=["User"];function usersIndexCtrl(User){var vm=this;User.query(function(data){vm.users=data.users;});}
-"use strict";angular.module("mode").controller("itemsIndexCtrl",itemsIndexCtrl);itemsIndexCtrl.$inject=["Item","$stateParams"];function itemsIndexCtrl(Item,$stateParams){var vm=this;Item.query().$promise.then(function(data){vm.items=data.items;});}
-"use strict";angular.module("mode").controller("outfitsIndexCtrl",outfitsIndexCtrl);outfitsIndexCtrl.$inject=["Outfit"];function outfitsIndexCtrl(Outfit){var vm=this;Outfit.query().$promise.then(function(data){vm.outfits=data.outfits;});}
+"use strict";angular.module("mode").controller("outfitsEditCtrl",outfitsEditCtrl);outfitsEditCtrl.$inject=["Outfit","$stateParams","$state"];function outfitsEditCtrl(Outfit,$stateParams,$state){$("body").css("background-image","");var vm=this;Outfit.get($stateParams,function(data){vm.outfit=data.outfit;});vm.submit=function(){Outfit.update($stateParams,{outfit:vm.outfit}).$promise.then(function(data){$state.go("outfitsShow",$stateParams);});};}
+"use strict";angular.module("mode").controller("itemsEditCtrl",itemsEditCtrl);itemsEditCtrl.$inject=["Item","$stateParams","$state"];function itemsEditCtrl(Item,$stateParams,$state){$("body").css("background-image","");var vm=this;Item.get($stateParams,function(data){vm.item=data.item;});vm.submit=function(){console.log("vm.item",vm.item);Item.update($stateParams,{item:vm.item.data}).$promise.then(function(data){$state.go("item",$stateParams);});};}
+"use strict";angular.module("mode").controller("homeCtrl",homeCtrl);homeCtrl.$inject=["$window","CurrentUserService"];function homeCtrl($window,CurrentUserService){// 
+// $('#toggle').click(function() {
+//    $(this).toggleClass('active');
+//    $('#overlay').toggleClass('open');
+//   });
+console.log("runnign");$("body").css("background-image","url('../main6.jpg')");setTimeout(function(){if(CurrentUserService.getUser()&&!$window.localStorage.getItem("firstVisit")){$('#myModal').modal('show');$window.localStorage.setItem("firstVisit",true);}},1000);}
+"use strict";angular.module("mode").controller("itemsIndexCtrl",itemsIndexCtrl);itemsIndexCtrl.$inject=["Item","$stateParams"];function itemsIndexCtrl(Item,$stateParams){$("body").css("background-image","");var vm=this;Item.query().$promise.then(function(data){vm.items=data.items;});}
+"use strict";angular.module("mode").controller("outfitsIndexCtrl",outfitsIndexCtrl);outfitsIndexCtrl.$inject=["Outfit"];function outfitsIndexCtrl(Outfit){console.log("running");$("body").css("background-image","");var vm=this;Outfit.query().$promise.then(function(data){console.log(data);console.log(data.outfits);vm.outfits=data.outfits;});}
+"use strict";angular.module("mode").controller("usersIndexCtrl",usersIndexCtrl);usersIndexCtrl.$inject=["User"];function usersIndexCtrl(User){$("body").css("background-image","url('../main6.jpg')");var vm=this;User.query(function(data){vm.users=data.users;});}
 "use strict";angular.module("mode").config(setUpInterceptor);setUpInterceptor.$inject=["$httpProvider"];function setUpInterceptor($httpProvider){return $httpProvider.interceptors.push("AuthInterceptor");}
 "use strict";angular.module("mode").factory("Item",itemFactory);itemFactory.$inject=["API","$resource"];function itemFactory(API,$resource){return $resource(API+"/items/:id",{id:"@_id"},{'query':{method:"GET",isArray:false}});}
-"use strict";angular.module("mode").controller("loginCtrl",loginCtrl);loginCtrl.$inject=["User","CurrentUserService"];function loginCtrl(User,CurrentUserService){var vm=this;vm.login=function(){User.login(vm.user).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
+"use strict";angular.module("mode").controller("loginCtrl",loginCtrl);loginCtrl.$inject=["User","CurrentUserService"];function loginCtrl(User,CurrentUserService){$("body").css("background-image","");var vm=this;vm.login=function(){User.login(vm.user).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
 "use strict";angular.module("mode").controller("mainCtrl",mainCtrl);mainCtrl.$inject=["$rootScope","CurrentUserService","$state"];function mainCtrl($rootScope,CurrentUserService,$state){var vm=this;vm.user=CurrentUserService.getUser();vm.logout=function(){event.preventDefault();CurrentUserService.clearUser();};$rootScope.$on("loggedIn",function(){vm.user=CurrentUserService.getUser();$state.go("usersShow",{id:vm.user._id});});$rootScope.$on("loggedOut",function(){vm.user=null;$state.go("home");});$('#toggle').click(function(){$(this).toggleClass('active');$('#overlay').toggleClass('open');});// function clickSet() {
 //  circularnav.classList.toggle("closed")
 //  circularnav.classList.toggle("clicked");
@@ -52831,14 +52869,14 @@ var Popover = function ($) {
 //     }
 // });
 }
-"use strict";angular.module("mode").controller("outfitsNewCtrl",outfitsNewCtrl);outfitsNewCtrl.$inject=["Item","Outfit","$state"];function outfitsNewCtrl(Item,Outfit,$state){var vm=this;Item.query().$promise.then(function(data){vm.items=data.items;});vm.outfit={items:[]};vm.selectItem=function(item){if(vm.outfit.items.indexOf(item._id)===-1){vm.outfit.items.push(item._id);}else{vm.outfit.items.splice(vm.outfit.items.indexOf(item._id),1);}};vm.submit=function(){Outfit.save({outfit:vm.outfit}).$promise.then(function(data){$state.go("outfitsIndex");});};}
-"use strict";angular.module("mode").controller("itemsNewCtrl",itemsNewCtrl);itemsNewCtrl.$inject=["Item","$state"];function itemsNewCtrl(Item,$state){var vm=this;vm.submit=function(){Item.save({item:vm.item}).$promise.then(function(data){$state.go("itemsIndex");});};}
+"use strict";angular.module("mode").controller("itemsNewCtrl",itemsNewCtrl);itemsNewCtrl.$inject=["Item","$state"];function itemsNewCtrl(Item,$state){$("body").css("background-image","");var vm=this;vm.submit=function(){Item.save({item:vm.item}).$promise.then(function(data){$state.go("itemsIndex");});};}
+"use strict";angular.module("mode").controller("outfitsNewCtrl",outfitsNewCtrl);outfitsNewCtrl.$inject=["Item","Outfit","$state"];function outfitsNewCtrl(Item,Outfit,$state){$("body").css("background-image","");var vm=this;Item.query().$promise.then(function(data){vm.items=data.items;});vm.outfit={items:[]};vm.selectItem=function(item){if(vm.outfit.items.indexOf(item._id)===-1){vm.outfit.items.push(item._id);}else{vm.outfit.items.splice(vm.outfit.items.indexOf(item._id),1);}};vm.submit=function(){Outfit.save({outfit:vm.outfit}).$promise.then(function(data){$state.go("outfitsIndex");});};}
 "use strict";angular.module("mode").factory("Outfit",outfitFactory);outfitFactory.$inject=["API","$resource"];function outfitFactory(API,$resource){return $resource(API+"/outfits/:id",{id:"@_id"},{'query':{method:"GET",isArray:false}});}
-"use strict";angular.module("mode").controller("registerCtrl",registerCtrl);registerCtrl.$inject=["User","CurrentUserService"];function registerCtrl(User,CurrentUserService){var vm=this;vm.register=function(){User.register({user:vm.user}).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
-"use strict";angular.module("mode").config(Router);Router.$inject=["$stateProvider","$locationProvider","$urlRouterProvider"];function Router($stateProvider,$locationProvider,$urlRouterProvider){$locationProvider.html5Mode(true);$stateProvider.state("home",{url:"/",templateUrl:"/js/views/home.html"}).state("register",{url:"/register",templateUrl:"/js/views/register.html",controller:"registerCtrl as register"}).state("login",{url:"/login",templateUrl:"/js/views/login.html",controller:"loginCtrl as login"}).state("usersShow",{url:"/users/:id",templateUrl:"/js/views/users/show.html",controller:"usersShowCtrl as usersShow"}).state("itemsIndex",{url:"/items",templateUrl:"/js/views/items/index.html",controller:"itemsIndexCtrl as itemsIndex"}).state("itemsEdit",{url:"/items/:id/edit",templateUrl:"/js/views/items/edit.html",controller:"itemsEditCtrl as itemsEdit"}).state('itemsNew',{url:"/items/new",templateUrl:"/js/views/items/new.html",controller:"itemsNewCtrl as itemsNew"}).state('itemsShow',{url:"/items/:id",templateUrl:"/js/views/items/show.html",controller:"itemsShowCtrl as itemsShow"}).state("outfitsIndex",{url:"/outfits",templateUrl:"/js/views/outfits/index.html",controller:"outfitsIndexCtrl as outfitsIndex"}).state('outfitsNew',{url:"/outfits/new",templateUrl:"/js/views/outfits/new.html",controller:"outfitsNewCtrl as outfitsNew"}).state('outfitsShow',{url:"/outfits/:id",templateUrl:"/js/views/outfits/show.html",controller:"outfitsShowCtrl as outfitsShow"});$urlRouterProvider.otherwise("/");}
-"use strict";angular.module("mode").controller("itemsShowCtrl",itemsShowCtrl);itemsShowCtrl.$inject=["Item","$stateParams","$state"];function itemsShowCtrl(Item,$stateParams,$state){var vm=this;Item.get($stateParams,function(data){vm.item=data.item;});vm.itemDelete=function(){Item.delete($stateParams).$promise.then(function(data){$state.go("itemsIndex");});};}
-"use strict";angular.module("mode").controller("outfitsShowCtrl",outfitsShowCtrl);outfitsShowCtrl.$inject=["Outfit","$stateParams","$state"];function outfitsShowCtrl(Outfit,$stateParams,$state){var vm=this;Outfit.get($stateParams).$promise.then(function(data){console.log(data);vm.outfit=data.outfit;});vm.outfitDelete=function(){Outfit.delete($stateParams).$promise.then(function(data){$state.go("outfitsIndex");});};}
-'use strict';angular.module('mode').controller('usersShowCtrl',usersShowCtrl);usersShowCtrl.$inject=['User','$stateParams'];function usersShowCtrl(User,$stateParams){var vm=this;User.get($stateParams,function(data){vm.user=data.user;});}
+"use strict";angular.module("mode").controller("registerCtrl",registerCtrl);registerCtrl.$inject=["User","CurrentUserService"];function registerCtrl(User,CurrentUserService){$("body").css("background-image","");var vm=this;vm.register=function(){User.register({user:vm.user}).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
+"use strict";angular.module("mode").config(Router);Router.$inject=["$stateProvider","$locationProvider","$urlRouterProvider"];function Router($stateProvider,$locationProvider,$urlRouterProvider){$locationProvider.html5Mode(true);$stateProvider.state("home",{url:"/",templateUrl:"/js/views/home.html",controller:"homeCtrl as home"}).state("register",{url:"/register",templateUrl:"/js/views/register.html",controller:"registerCtrl as register"}).state("login",{url:"/login",templateUrl:"/js/views/login.html",controller:"loginCtrl as login"}).state("usersShow",{url:"/users/:id",templateUrl:"/js/views/users/show.html",controller:"usersShowCtrl as usersShow"}).state("itemsIndex",{url:"/items",templateUrl:"/js/views/items/index.html",controller:"itemsIndexCtrl as itemsIndex"}).state("itemsEdit",{url:"/items/:id/edit",templateUrl:"/js/views/items/edit.html",controller:"itemsEditCtrl as itemsEdit"}).state('itemsNew',{url:"/items/new",templateUrl:"/js/views/items/new.html",controller:"itemsNewCtrl as itemsNew"}).state('itemsShow',{url:"/items/:id",templateUrl:"/js/views/items/show.html",controller:"itemsShowCtrl as itemsShow"}).state("outfitsIndex",{url:"/outfits",templateUrl:"/js/views/outfits/index.html",controller:"outfitsIndexCtrl as outfitsIndex"}).state('outfitsNew',{url:"/outfits/new",templateUrl:"/js/views/outfits/new.html",controller:"outfitsNewCtrl as outfitsNew"}).state('outfitsShow',{url:"/outfits/:id",templateUrl:"/js/views/outfits/show.html",controller:"outfitsShowCtrl as outfitsShow"});$urlRouterProvider.otherwise("/");}
+"use strict";angular.module("mode").controller("outfitsShowCtrl",outfitsShowCtrl);outfitsShowCtrl.$inject=["Outfit","$stateParams","$state"];function outfitsShowCtrl(Outfit,$stateParams,$state){$("body").css("background-image","");var vm=this;Outfit.get($stateParams).$promise.then(function(data){console.log(data);vm.outfit=data.outfit;});vm.outfitDelete=function(){Outfit.delete($stateParams).$promise.then(function(data){$state.go("outfitsIndex");});};}
+'use strict';angular.module('mode').controller('usersShowCtrl',usersShowCtrl);usersShowCtrl.$inject=['User','$stateParams'];function usersShowCtrl(User,$stateParams){$("body").css("background-image","url('../main6.jpg')");var vm=this;User.get($stateParams,function(data){vm.user=data.user;});}
+"use strict";angular.module("mode").controller("itemsShowCtrl",itemsShowCtrl);itemsShowCtrl.$inject=["Item","$stateParams","$state"];function itemsShowCtrl(Item,$stateParams,$state){$("body").css("background-image","");var vm=this;Item.get($stateParams,function(data){vm.item=data.item;});vm.itemDelete=function(){Item.delete($stateParams).$promise.then(function(data){$state.go("itemsIndex");});};}
 'use strict';angular.module("mode").directive('toggleClass',function(){return{restrict:'A',link:function link(scope,element,attrs){element.bind('click',function(){element.toggleClass(attrs.toggleClass);});}};});
 "use strict";angular.module("mode").service("TokenService",TokenService);TokenService.$inject=["$window","jwtHelper"];function TokenService($window,jwtHelper){var self=this;self.setToken=setToken;self.getToken=getToken;self.decodeToken=decodeToken;self.clearToken=clearToken;function setToken(token){return $window.localStorage.setItem("auth-token",token);}function getToken(){return $window.localStorage.getItem("auth-token");}function decodeToken(){var token=self.getToken();return token?jwtHelper.decodeToken(token):null;}function clearToken(){return $window.localStorage.removeItem("auth-token");}}
 "use strict";angular.module("mode").factory("User",userFactory);userFactory.$inject=["API","$resource"];function userFactory(API,$resource){return $resource(API+"/users/:id",{id:"@_id"},{'query':{method:"GET",isArray:false},'register':{method:"POST",url:API+"/register"},'login':{method:"POST",url:API+"/login"}});}

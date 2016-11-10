@@ -4,6 +4,7 @@ angular
 
 itemsNewCtrl.$inject = ["Item", "$state"];
 function itemsNewCtrl(Item, $state){
+    $("body").css("background-image", "");
   const vm  = this;
   vm.submit = () => {
     Item

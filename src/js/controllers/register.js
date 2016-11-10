@@ -4,6 +4,7 @@ angular
 
 registerCtrl.$inject = ["User", "CurrentUserService"];
 function registerCtrl(User, CurrentUserService){
+    $("body").css("background-image", "");
   const vm    = this;
   vm.register = () => {
     User

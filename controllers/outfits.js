@@ -11,7 +11,9 @@ const Outfit = require('../models/outfit');
 function outfitsIndex(req, res) {
   Outfit.find({
     user: req.user._id
-  }, (err, outfits) => {
+  })
+  .populate("items")
+  .exec((err, outfits) => {
     if (err) return res.status(500).json({ message: "Something went wrong." });
     return res.status(200).json({ outfits });
   });
