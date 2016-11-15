@@ -1,12 +1,5 @@
-<div class="items media" ng-repeat="item in outfitsShow.outfit.items">
-  <div class="media-left">
-    <ul class="row">
-      <li class="col-xl-2">
-        <ul class="tile">
-    <a ui-sref="itemsShow({ id: item._id })">
-      <img class="media-object" ng-src="{{ item.image }}">
-    </a>
-  </ul>
-</li>
-</ul>
+<div ng-repeat="outfit in outfitsShow.outfit.items">
+<img ng-src="{{ outfitShow.items.image }}">
 </div>
+
+<button class="btn btn-default" ng-click="itemsShow.itemDelete()">Delete</button>
