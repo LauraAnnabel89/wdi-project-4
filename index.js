@@ -1,15 +1,16 @@
-const express    = require("express");
-const morgan     = require("morgan");
-const bodyParser = require("body-parser");
-const cors       = require("cors");
-const mongoose   = require("mongoose");
-const expressJWT = require("express-jwt");
+const express     = require("express");
+const morgan      = require("morgan");
+const bodyParser  = require("body-parser");
+const cors        = require("cors");
+const mongoose    = require("mongoose");
+const expressJWT  = require("express-jwt");
 
-const app        = express();
-const config     = require("./config/config");
-const router     = require("./config/routes");
+const app         = express();
+const environment = app.get('env');
+const config      = require("./config/config");
+const router      = require("./config/routes");
 
-mongoose.connect(config.db[environment]);
+mongoose.connect(config.db.production);
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
