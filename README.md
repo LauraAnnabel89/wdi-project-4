@@ -4,7 +4,7 @@ Mode
 
 A virtual wardrobe application.
 
-![Alt text](/src/site.jpg?raw=true)
+[Alt text](/src/site.jpg?raw=true)
 
 Overview
 
