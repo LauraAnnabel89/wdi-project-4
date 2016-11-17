@@ -4,7 +4,7 @@ const async      = require("async");
 const Bluebird   = require("bluebird");
 
 mongoose.Promise = Bluebird;
-mongoose.connect(config.db);
+mongoose.connect(config.db.production);
 
 const User       = require("../models/user");
 const Item       = require("../models/item");

@@ -9,7 +9,7 @@ const app        = express();
 const config     = require("./config/config");
 const router     = require("./config/routes");
 
-mongoose.connect(config.db);
+mongoose.connect(config.db[environment]);
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
