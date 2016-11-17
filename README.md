@@ -4,7 +4,7 @@ Mode
 
 A virtual wardrobe application.
 
-[Alt text](/src/site.jpg?raw=true)
+![Alt text](/src/mode.png?raw=true)
 
 Overview
 
@@ -26,7 +26,7 @@ I decided to keep the colour scheme very minimal and already knew that I wanted 
 
 ![Alt text](/src/font.png?raw=true)
 
-![Alt text](/src/rail.jpg?raw=true)
+![Alt text](/src/rail.png?raw=true)
 
 How it works
 
@@ -34,8 +34,11 @@ Once the user logs in or registered they are taken to the landing page. From her
 
 On the item page they will be shown all of their items and be able to click on the hanger to add any. I toyed with a few different ways of the user selecting their items as I wanted it to be as easy as possible. Therefore as this is primarily mobile phone focused I decided users would search on google images or similar for their items and be able to upload them to their wardrobes that way.
 
+![Alt text](/src/items.jpg?raw=true)
+
 On the outfit pages the user is presented with their wardrobe and an option to name their outfit choice. They then select as many items as they want to create the full outfit, this is displayed on the outfit page.
 
+![Alt text](/src/outfits.jpg?raw=true)
 
 Planning
 
