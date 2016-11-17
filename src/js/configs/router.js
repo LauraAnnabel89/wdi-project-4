@@ -52,16 +52,17 @@ function Router($stateProvider, $locationProvider, $urlRouterProvider){
     templateUrl:  "/js/views/outfits/index.html",
     controller:   "outfitsIndexCtrl as outfitsIndex",
   })
-  .state('outfitsShow', {
-    url: "/outfits/:id",
-    templateUrl: "/js/views/outfits/show.html",
-    controller: "outfitsShowCtrl as outfitsShow"
-  })
   .state('outfitsNew', {
     url: "/outfits/new",
     templateUrl: "/js/views/outfits/new.html",
     controller: "outfitsNewCtrl as outfitsNew"
+  })
+  .state('outfitsShow', {
+    url: "/outfits/:id",
+    templateUrl: "/js/views/outfits/show.html",
+    controller: "outfitsShowCtrl as outfitsShow"
   });
+
 
   $urlRouterProvider.otherwise("/");
 }
