@@ -52849,26 +52849,7 @@ console.log("runnign");$("body").css("background-image","url('../main6.jpg')");s
 "use strict";angular.module("mode").config(setUpInterceptor);setUpInterceptor.$inject=["$httpProvider"];function setUpInterceptor($httpProvider){return $httpProvider.interceptors.push("AuthInterceptor");}
 "use strict";angular.module("mode").factory("Item",itemFactory);itemFactory.$inject=["API","$resource"];function itemFactory(API,$resource){return $resource(API+"/items/:id",{id:"@_id"},{'query':{method:"GET",isArray:false}});}
 "use strict";angular.module("mode").controller("loginCtrl",loginCtrl);loginCtrl.$inject=["User","CurrentUserService"];function loginCtrl(User,CurrentUserService){$("body").css("background-image","");var vm=this;vm.login=function(){User.login(vm.user).$promise.then(function(data){var user=data.user?data.user:null;if(user){CurrentUserService.saveUser(user);}});};}
-"use strict";angular.module("mode").controller("mainCtrl",mainCtrl);mainCtrl.$inject=["$rootScope","CurrentUserService","$state"];function mainCtrl($rootScope,CurrentUserService,$state){var vm=this;vm.user=CurrentUserService.getUser();vm.logout=function(){event.preventDefault();CurrentUserService.clearUser();};$rootScope.$on("loggedIn",function(){vm.user=CurrentUserService.getUser();$state.go("usersShow",{id:vm.user._id});});$rootScope.$on("loggedOut",function(){vm.user=null;$state.go("home");});$('#toggle').click(function(){$(this).toggleClass('active');$('#overlay').toggleClass('open');});// function clickSet() {
-//  circularnav.classList.toggle("closed")
-//  circularnav.classList.toggle("clicked");
-//   if (circularnav.classList.contains("closed")) {
-//     // freshly closed button
-//     var pseudoBefore = window.getComputedStyle(
-// document.querySelector('.ss-icon'), ':before'
-// ).animation
-//   }
-// }
-//
-// var circularnav = document.getElementsByClassName("ss-icon")[0];
-// circularnav.addEventListener("click", clickSet, false);
-//
-// circularnav.addEventListener("keydown", function (e) {
-//     if (e.keyCode === 13) {
-//         clickSet();
-//     }
-// });
-}
+"use strict";angular.module("mode").controller("mainCtrl",mainCtrl);mainCtrl.$inject=["$rootScope","CurrentUserService","$state"];function mainCtrl($rootScope,CurrentUserService,$state){var vm=this;vm.user=CurrentUserService.getUser();vm.logout=function(){event.preventDefault();CurrentUserService.clearUser();};$rootScope.$on("loggedIn",function(){vm.user=CurrentUserService.getUser();$state.go("usersShow",{id:vm.user._id});});$rootScope.$on("loggedOut",function(){vm.user=null;$state.go("home");});$('#toggle').click(function(){$(this).toggleClass('active');$('#overlay').toggleClass('open');});}
 "use strict";angular.module("mode").controller("itemsNewCtrl",itemsNewCtrl);itemsNewCtrl.$inject=["Item","$state"];function itemsNewCtrl(Item,$state){$("body").css("background-image","");var vm=this;vm.submit=function(){Item.save({item:vm.item}).$promise.then(function(data){$state.go("itemsIndex");});};}
 "use strict";angular.module("mode").controller("outfitsNewCtrl",outfitsNewCtrl);outfitsNewCtrl.$inject=["Item","Outfit","$state"];function outfitsNewCtrl(Item,Outfit,$state){$("body").css("background-image","");var vm=this;Item.query().$promise.then(function(data){vm.items=data.items;});vm.outfit={items:[]};vm.selectItem=function(item){if(vm.outfit.items.indexOf(item._id)===-1){vm.outfit.items.push(item._id);}else{vm.outfit.items.splice(vm.outfit.items.indexOf(item._id),1);}};vm.submit=function(){Outfit.save({outfit:vm.outfit}).$promise.then(function(data){$state.go("outfitsIndex");});};}
 "use strict";angular.module("mode").factory("Outfit",outfitFactory);outfitFactory.$inject=["API","$resource"];function outfitFactory(API,$resource){return $resource(API+"/outfits/:id",{id:"@_id"},{'query':{method:"GET",isArray:false}});}
