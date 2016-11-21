@@ -1,7 +1,7 @@
 <h1 class="heading">Outfits</h1>
 <h2 ui-sref="outfitsNew()"><img src="../hangerEmpty.png" alt="" />Add an Outfit</h2>
 <ul>
-  <li ng-repeat="outfit in outfitsIndex.outfits" ui-sref="outfitsShow({ id: outfit.id })">
+  <li ng-repeat="outfit in outfitsIndex.outfits" ui-sref="outfitsShow({ id: outfit._id })">
     <ul class="outfit-row">
       <!-- <li><h4>{{outfit.name}}</h4></li> -->
       <li ng-repeat="item in outfit.items"><img ng-src="{{item.image}}" alt="{{item.item}}" /></li>

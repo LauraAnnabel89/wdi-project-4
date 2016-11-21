@@ -27,4 +27,9 @@ function mainCtrl($rootScope, CurrentUserService, $state) {
     $(this).toggleClass('active');
     $('#overlay').toggleClass('open');
   });
+
+  $('.overlay-menu li a').click(function() {
+    $('#toggle').toggleClass('active');
+    $('#overlay').toggleClass('open');
+  });
 }

@@ -1,5 +1,5 @@
-<div ng-repeat="outfit in outfitsShow.outfit.items">
-<img ng-src="{{ outfitShow.items.image }}">
+<div ng-repeat="item in outfitsShow.outfit.items">
+<img ng-src="{{ item.image }}">
 </div>
 
-<button class="btn btn-default" ng-click="itemsShow.itemDelete()">Delete</button>
+<button class="btn btn-default" ng-click="outfitsShow.outfitDelete()">Delete</button>
