@@ -1,49 +1,53 @@
 <!DOCTYPE html>
 <html ng-app="mode">
+
 <head>
-  <meta charset="utf-8">
-  <title>Mode</title>
-  <link rel="stylesheet" href="/css/style.css" charset="utf-8">
-  <!-- <script src="ng-flow/dist/ng-flow-standalone.min.js"></script> -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <script src="/js/app.js" charset="utf-8"></script>
-  <base href="/" />
+    <meta charset="utf-8">
+    <title>Mode</title>
+    <link rel="stylesheet" href="/css/style.css" charset="utf-8">
+    <!-- <script src="ng-flow/dist/ng-flow-standalone.min.js"></script> -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <script src="/js/app.js" charset="utf-8"></script>
+    <base href="/" />
 </head>
+
 <body ng-controller="mainCtrl as main">
-<header>
-    <h1 class="title" ui-sref="home">Mode</h1>
-    <h3 class="userGreet" ng-show="main.user" >Welcome, {{ main.user.username }}</h3>
-    <div class="button_container" id="toggle">
-      <span class="top"></span>
-      <span class="middle"></span>
-      <span class="bottom"></span>
-    </div>
-  </header>
+    <header>
+        <h1 class="title" ui-sref="home">Mode</h1>
+        <h3 class="userGreet" ng-show="main.user">Welcome, {{ main.user.username }}</h3>
+        <div class="button_container" id="toggle">
+            <span class="top"></span>
+            <span class="middle"></span>
+            <span class="bottom"></span>
+        </div>
+    </header>
     <div class="overlay" id="overlay">
-      <nav class="overlay-menu">
-        <ul>
-          <li>
-            <a class="home" ui-sref="home">Home</a>
-          </li>
-          <li ng-hide="main.user">
-            <a class="subTitle" ui-sref="login">Login</a>
-          </li>
-          <li ng-hide="main.user">
-            <a class="subTitle" ui-sref="register">Register</a>
-          </li>
-          <li ng-show="main.user">
-            <a class="subTitle" ui-sref="itemsIndex()">Items</a>
-          </li>
-          <li ng-show="main.user">
-            <a class="subTitle" ui-sref="outfitsIndex">Outfits</a>
-          </li>
-          <li ng-show="main.user">
-            <a class="subTitle" ng-click="main.logout()">Logout</a>
-          </li>
-        </ul>
-      </nav>
+        <nav class="overlay-menu">
+            <ul>
+                <li>
+                    <a class="home" ui-sref="home">Home</a>
+                    <a href="tom-portfolio/index.html" style="color: ghostwhite; position: absolute; left: 0px" ;>Tom</a>
+                </li>
+                <li ng-hide="main.user">
+                    <a class="subTitle" ui-sref="login">Login</a>
+                </li>
+                <li ng-hide="main.user">
+                    <a class="subTitle" ui-sref="register">Register</a>
+                </li>
+                <li ng-show="main.user">
+                    <a class="subTitle" ui-sref="itemsIndex()">Items</a>
+                </li>
+                <li ng-show="main.user">
+                    <a class="subTitle" ui-sref="outfitsIndex">Outfits</a>
+                </li>
+                <li ng-show="main.user">
+                    <a class="subTitle" ng-click="main.logout()">Logout</a>
+                </li>
+            </ul>
+        </nav>
     </div>
-  <main class="container" ui-view>
-  </main>
+    <main class="container" ui-view>
+    </main>
 </body>
+
 </html>
